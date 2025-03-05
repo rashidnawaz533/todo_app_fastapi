@@ -103,8 +103,9 @@ async def get_single_todo(id: int, session:Annotated[Session,Depends(get_session
         raise HTTPException(status_code=404, detail="Not Found")
 
 @app.put('/todos/{id}')
-async def edit_todo(todo: Todo, session:Annotated[Session,Depends(get_session)]):
-    existing_todo = session.exec(select(Todo).where(Todo.id==id)).first()
+async def edit_todo(id: int,todo: Todo, session:Annotated[Session,Depends(get_session)]):
+    existing_todo = session.exec(select(Todo).where(Todo.id == id)).first()
+    #existing_todo = session.get(Todo,id)
     if existing_todo:
         existing_todo.content = todo.content
         existing_todo.is_completed = todo.is_completed
@@ -113,7 +114,7 @@ async def edit_todo(todo: Todo, session:Annotated[Session,Depends(get_session)])
         session.refresh(existing_todo)
         return existing_todo
     else:
-        raise HTTPException(status_code=404, detail="Not Found")
+        raise HTTPException(status_code=404, detail="No task found")
 
 @app.delete('/todos/{id}')
 async def delete_todo(id:int, session:Annotated[Session,Depends(get_session)]):
