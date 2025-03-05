@@ -103,7 +103,7 @@ async def get_single_todo(id: int, session:Annotated[Session,Depends(get_session
         raise HTTPException(status_code=404, detail="Not Found")
 
 @app.put('/todos/{id}')
-async def edit_todo(todo: Todo, session:Annotated[Session,Depends(get_session)]):
+async def edit_todo(id:int,todo: Todo, session:Annotated[Session,Depends(get_session)]):
     existing_todo = session.exec(select(Todo).where(Todo.id==id)).first()
     if existing_todo:
         existing_todo.content = todo.content
